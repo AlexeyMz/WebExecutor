@@ -72,43 +72,55 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.9.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.2.9.0.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompletedEventArgs.cs" />
-    <Compile Include="DownloadItem.cs">
+    <Compile Include="UI\DownloadItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DownloadItem.Designer.cs">
+    <Compile Include="UI\DownloadItem.Designer.cs">
       <DependentUpon>DownloadItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="DownloadState.cs" />
-    <Compile Include="ExecuterForm.cs">
+    <Compile Include="Core\DownloadState.cs" />
+    <Compile Include="UI\DownloadListPanel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ExecuterForm.Designer.cs">
+    <Compile Include="UI\DownloadListPanel.Designer.cs">
+      <DependentUpon>DownloadListPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ExecuterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ExecuterForm.Designer.cs">
       <DependentUpon>ExecuterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="IDownload.cs" />
-    <Compile Include="IDownloadManager.cs" />
-    <Compile Include="InteractiveConsoleWriter.cs" />
-    <Compile Include="LuaSyntaxModeProvider .cs" />
-    <Compile Include="ScriptExecutor.cs" />
-    <Compile Include="LuaExtensions.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Core\IDownload.cs" />
+    <Compile Include="Core\IDownloadManager.cs" />
+    <Compile Include="UI\InteractiveConsoleWriter.cs" />
+    <Compile Include="UI\LuaSyntaxModeProvider .cs" />
+    <Compile Include="Core\ScriptExecutor.cs" />
+    <Compile Include="Utils\LuaExtensions.cs" />
+    <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="UI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="DownloadItem.resx">
+    <EmbeddedResource Include="UI\DownloadItem.resx">
       <DependentUpon>DownloadItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ExecuterForm.resx">
+    <EmbeddedResource Include="UI\DownloadListPanel.resx">
+      <DependentUpon>DownloadListPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ExecuterForm.resx">
       <DependentUpon>ExecuterForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -135,7 +147,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="WebSettings.cs" />
+    <Compile Include="Utils\WinFormsExtensions.cs" />
+    <Compile Include="Core\WebSettings.cs" />
     <EmbeddedResource Include="Resources\SharpLua.xshd" />
   </ItemGroup>
   <ItemGroup>

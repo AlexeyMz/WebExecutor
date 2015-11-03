@@ -7,7 +7,7 @@ namespace WebExecutor
 {
     public enum DownloadState
     {
-        None,
+        NotStarted,
         Downloading,
         Completed,
         Cancelled,

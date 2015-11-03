@@ -39,8 +39,10 @@ namespace WebExecutor
             textBoxUrl.Text = resource.ToString();
             textBoxFile.Text = fileName;
 
-            DownloadState = DownloadState.None;
+            DownloadState = DownloadState.NotStarted;
         }
+
+        public DownloadItem() { InitializeComponent(); }
 
         private void OnStateChanged()
         {

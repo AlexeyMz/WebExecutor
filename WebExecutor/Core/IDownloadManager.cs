@@ -9,6 +9,10 @@ namespace WebExecutor
     {
         IEnumerable<IDownload> Downloads { get; }
 
-        void AddDownload(Uri resource, string fileName);
+        IDownload AddDownload(Uri resource, string fileName);
+
+        void ClearDownloads();
+
+        bool TryCancelDownloads();
     }
 }

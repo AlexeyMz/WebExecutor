@@ -51,13 +51,13 @@
             // 
             // textBoxUrl
             // 
-            this.textBoxUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxUrl.BackColor = System.Drawing.Color.WhiteSmoke;
             this.textBoxUrl.Location = new System.Drawing.Point(44, 6);
             this.textBoxUrl.Name = "textBoxUrl";
             this.textBoxUrl.ReadOnly = true;
-            this.textBoxUrl.Size = new System.Drawing.Size(370, 20);
+            this.textBoxUrl.Size = new System.Drawing.Size(346, 20);
             this.textBoxUrl.TabIndex = 1;
             // 
             // labelFile
@@ -71,22 +71,22 @@
             // 
             // textBoxFile
             // 
-            this.textBoxFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxFile.BackColor = System.Drawing.Color.WhiteSmoke;
             this.textBoxFile.Location = new System.Drawing.Point(44, 29);
             this.textBoxFile.Name = "textBoxFile";
             this.textBoxFile.ReadOnly = true;
-            this.textBoxFile.Size = new System.Drawing.Size(370, 20);
+            this.textBoxFile.Size = new System.Drawing.Size(346, 20);
             this.textBoxFile.TabIndex = 1;
             // 
             // progressBar
             // 
-            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.Location = new System.Drawing.Point(6, 77);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(284, 23);
+            this.progressBar.Size = new System.Drawing.Size(260, 23);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 3;
             // 
@@ -95,8 +95,8 @@
             this.backgroundWorker.WorkerReportsProgress = true;
             this.backgroundWorker.WorkerSupportsCancellation = true;
             this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
-            this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
             this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+            this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
             // 
             // labelStatus
             // 
@@ -109,19 +109,20 @@
             // 
             // textBoxStatus
             // 
-            this.textBoxStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxStatus.BackColor = System.Drawing.Color.WhiteSmoke;
             this.textBoxStatus.Location = new System.Drawing.Point(44, 51);
             this.textBoxStatus.Name = "textBoxStatus";
             this.textBoxStatus.ReadOnly = true;
-            this.textBoxStatus.Size = new System.Drawing.Size(370, 20);
+            this.textBoxStatus.Size = new System.Drawing.Size(346, 20);
             this.textBoxStatus.TabIndex = 1;
             // 
             // buttonCancel
             // 
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.Enabled = false;
-            this.buttonCancel.Location = new System.Drawing.Point(296, 77);
+            this.buttonCancel.Location = new System.Drawing.Point(269, 77);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 4;
@@ -131,8 +132,9 @@
             // 
             // buttonRetry
             // 
+            this.buttonRetry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonRetry.Enabled = false;
-            this.buttonRetry.Location = new System.Drawing.Point(358, 77);
+            this.buttonRetry.Location = new System.Drawing.Point(331, 77);
             this.buttonRetry.Name = "buttonRetry";
             this.buttonRetry.Size = new System.Drawing.Size(56, 23);
             this.buttonRetry.TabIndex = 4;
@@ -144,6 +146,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.buttonRetry);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.progressBar);
@@ -154,7 +157,7 @@
             this.Controls.Add(this.textBoxUrl);
             this.Controls.Add(this.labelUrl);
             this.Name = "DownloadItem";
-            this.Size = new System.Drawing.Size(417, 107);
+            this.Size = new System.Drawing.Size(393, 106);
             this.ResumeLayout(false);
             this.PerformLayout();
 

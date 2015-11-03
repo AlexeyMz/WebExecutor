@@ -9,6 +9,7 @@ using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 using NLua;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace WebExecutor
 {
@@ -17,43 +18,33 @@ namespace WebExecutor
         static readonly string[][] UserAgents = new[]
         {
             new[] { "ChromeWindows7",  // Google Chrome 4.0.249.89 под Windows 7
-                "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.5 " + 
-                "(KHTML, like Gecko) Chrome/4.0.249.89 Safari/532.5" },
+                "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36" },
         };
 
-        public bool IsRunning { get; private set; }
-
-        bool disposed = false;
-        
-        Lua lua;
-        Thread thread;
-
+        TaskScheduler uiScheduler;
         IDownloadManager downloadManager;
         TextWriter debugWriter;
 
+        Lua lua;
+        TaskCompletionSource<bool> completitionSource;
+        Thread thread;
+        bool disposed = false;
+
         WebSettings webSettings = new WebSettings();
 
-        public event EventHandler<CompletedEventArgs> Completed;
-
-        public ScriptExecutor(IDownloadManager downloadManager, TextWriter debugWriter)
+        public bool IsRunning
         {
+            get { return completitionSource != null && !completitionSource.Task.IsCompleted; }
+        }
+
+        public ScriptExecutor(TaskScheduler uiScheduler, IDownloadManager downloadManager, TextWriter debugWriter)
+        {
+            this.uiScheduler = uiScheduler;
             this.downloadManager = downloadManager;
             this.debugWriter = debugWriter;
             
             lua = new Lua();
             InitializeInterpreter();
-
-            IsRunning = false;
-        }
-
-        private void OnCompleted(Exception error)
-        {
-            var temp = Completed;
-
-            if (temp != null)
-            {
-                temp(this, new CompletedEventArgs(error));
-            }
         }
 
         [LuaFunction]
@@ -144,14 +135,17 @@ namespace WebExecutor
                 throw;
             }
 
-            downloadManager.AddDownload(resource, fileName);
+            Task.Factory.StartNew(state => downloadManager.AddDownload(resource, fileName),
+                null, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
         }
 
         [LuaFunction]
         public int ActiveDownloadsCount()
         {
-            return downloadManager.Downloads.Count(
-                d => d.DownloadState == DownloadState.Downloading);
+            var downloadsCount = Task.Factory.StartNew(state => downloadManager.Downloads.Count(
+                    d => d.DownloadState == DownloadState.Downloading),
+                null, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
+            return downloadsCount.Result;
         }
 
         [LuaFunction]
@@ -190,43 +184,44 @@ namespace WebExecutor
             }
         }
 
-        public void Run(string luaScript)
+        public Task Run(string luaScript, CancellationToken cancel = default(CancellationToken))
         {
             if (disposed)
-                return;
+                return null;
+            if (completitionSource != null && !completitionSource.Task.IsCompleted)
+                throw new InvalidOperationException("Cannot start script if is it still running");
 
-            IsRunning = true;
-
+            completitionSource = new TaskCompletionSource<bool>();
             thread = new Thread(() =>
             {
-                Exception error = null;
+                if (cancel.IsCancellationRequested)
+                {
+                    completitionSource.TrySetCanceled();
+                    return;
+                }
+
                 try
                 {
                     lua.DoString(luaScript);
+                    completitionSource.TrySetResult(true);
                 }
                 catch (Exception ex)
                 {
-                    error = ex;
+                    completitionSource.TrySetException(ex);
                 }
+            });
+            thread.Start();
 
-                IsRunning = false;
-                OnCompleted(error);
+            cancel.Register(() =>
+            {
+                if (IsRunning)
+                {
+                    lua.Dispose();
+                    completitionSource.TrySetCanceled();
+                }
             });
 
-            thread.Start();
-        }
-
-        public void Stop()
-        {
-            if (disposed)
-                return;
-
-            if (IsRunning)
-            {
-                thread.Abort();
-                IsRunning = false;
-                OnCompleted(null);
-            }
+            return completitionSource.Task;
         }
 
         public void Dispose()

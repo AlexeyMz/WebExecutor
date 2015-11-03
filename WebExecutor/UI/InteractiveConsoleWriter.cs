@@ -20,8 +20,7 @@ namespace WebExecutor
 
         public InteractiveConsoleWriter(TextBox output)
         {
-            if (output == null)
-                throw new ArgumentNullException("output");
+            if (output == null) { throw new ArgumentNullException(nameof(output)); }
 
             OutputTextBox = output;
             WriteToTextBox = true;
@@ -49,17 +48,8 @@ namespace WebExecutor
 
         private void AppendText(string value)
         {
-            if (!WriteToTextBox)
-                return;
-
-            if (OutputTextBox.InvokeRequired)
-            {
-                OutputTextBox.Invoke(new Action<string>(AppendText), value);
-            }
-            else
-            {
-                OutputTextBox.AppendText(value);
-            }
+            if (!WriteToTextBox) { return; }
+            OutputTextBox.InvokeIfRequired(() => OutputTextBox.AppendText(value));
         }
     }
 }

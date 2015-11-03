@@ -31,13 +31,10 @@
             this.textEditor = new ICSharpCode.TextEditor.TextEditorControl();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageScript = new System.Windows.Forms.TabPage();
-            this.tabPageFiles = new System.Windows.Forms.TabPage();
-            this.flowLayoutPanelFiles = new System.Windows.Forms.FlowLayoutPanel();
             this.tabPageDebug = new System.Windows.Forms.TabPage();
             this.textBoxDebug = new System.Windows.Forms.TextBox();
             this.tabControl.SuspendLayout();
             this.tabPageScript.SuspendLayout();
-            this.tabPageFiles.SuspendLayout();
             this.tabPageDebug.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,7 +50,6 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabPageScript);
-            this.tabControl.Controls.Add(this.tabPageFiles);
             this.tabControl.Controls.Add(this.tabPageDebug);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
@@ -73,32 +69,13 @@
             this.tabPageScript.Text = "Script";
             this.tabPageScript.UseVisualStyleBackColor = true;
             // 
-            // tabPageFiles
-            // 
-            this.tabPageFiles.Controls.Add(this.flowLayoutPanelFiles);
-            this.tabPageFiles.Location = new System.Drawing.Point(4, 22);
-            this.tabPageFiles.Name = "tabPageFiles";
-            this.tabPageFiles.Size = new System.Drawing.Size(488, 359);
-            this.tabPageFiles.TabIndex = 2;
-            this.tabPageFiles.Text = "Files";
-            this.tabPageFiles.UseVisualStyleBackColor = true;
-            // 
-            // flowLayoutPanelFiles
-            // 
-            this.flowLayoutPanelFiles.AutoScroll = true;
-            this.flowLayoutPanelFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanelFiles.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanelFiles.Name = "flowLayoutPanelFiles";
-            this.flowLayoutPanelFiles.Size = new System.Drawing.Size(488, 359);
-            this.flowLayoutPanelFiles.TabIndex = 0;
-            // 
             // tabPageDebug
             // 
             this.tabPageDebug.Controls.Add(this.textBoxDebug);
             this.tabPageDebug.Location = new System.Drawing.Point(4, 22);
             this.tabPageDebug.Name = "tabPageDebug";
             this.tabPageDebug.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDebug.Size = new System.Drawing.Size(488, 359);
+            this.tabPageDebug.Size = new System.Drawing.Size(625, 360);
             this.tabPageDebug.TabIndex = 3;
             this.tabPageDebug.Text = "Debug";
             this.tabPageDebug.UseVisualStyleBackColor = true;
@@ -113,7 +90,7 @@
             this.textBoxDebug.Name = "textBoxDebug";
             this.textBoxDebug.ReadOnly = true;
             this.textBoxDebug.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxDebug.Size = new System.Drawing.Size(482, 353);
+            this.textBoxDebug.Size = new System.Drawing.Size(619, 354);
             this.textBoxDebug.TabIndex = 0;
             // 
             // ExecuterForm
@@ -122,14 +99,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(633, 386);
             this.Controls.Add(this.tabControl);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "ExecuterForm";
             this.Text = "ExecuterForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExecuterForm_FormClosing);
             this.Load += new System.EventHandler(this.ExecuterForm_Load);
             this.Shown += new System.EventHandler(this.ExecuterForm_Shown);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExecuterForm_FormClosing);
             this.tabControl.ResumeLayout(false);
             this.tabPageScript.ResumeLayout(false);
-            this.tabPageFiles.ResumeLayout(false);
             this.tabPageDebug.ResumeLayout(false);
             this.tabPageDebug.PerformLayout();
             this.ResumeLayout(false);
@@ -141,8 +118,6 @@
         private ICSharpCode.TextEditor.TextEditorControl textEditor;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPageScript;
-        private System.Windows.Forms.TabPage tabPageFiles;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelFiles;
         private System.Windows.Forms.TabPage tabPageDebug;
         private System.Windows.Forms.TextBox textBoxDebug;
     }

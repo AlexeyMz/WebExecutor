@@ -1,43 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using ICSharpCode.TextEditor;
 using System.IO;
-using ICSharpCode.TextEditor.Document;
+using WeifenLuo.WinFormsUI.Docking;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace WebExecutor
 {
-    public partial class ExecuterForm : Form, IDownloadManager
+    public partial class ExecuterForm : DockContent
     {
         bool isSaved = false;
         bool hasUnsavedChanges = false;
         string fileName;
 
+        IDownloadManager downloadManager;
         ScriptExecutor executor;
+        CancellationTokenSource cancelSource;
 
-        List<IDownload> downloads = new List<IDownload>();
-
-        public IEnumerable<IDownload> Downloads
+        public TextAreaClipboardHandler TextEditorClipboardHandler
         {
-            get { return downloads.ToArray(); }
+            get { return textEditor.ActiveTextAreaControl.TextArea.ClipboardHandler; }
         }
 
-        public ExecuterForm()
+        public ExecuterForm(IDownloadManager downloadManager)
         {
+            this.downloadManager = downloadManager;
             InitializeComponent();
-
-            HighlightingManager.Manager.AddSyntaxModeFileProvider(new LuaSyntaxModeProvider(typeof(ExecuterForm).Assembly));
+            
             textEditor.SetHighlighting("SharpLua");
             textEditor.Document.DocumentChanged += Document_TextContentChanged;
         }
 
-        public ExecuterForm(string scriptFile)
-            : this()
+        public ExecuterForm(IDownloadManager downloadManager, string scriptFile)
+            : this(downloadManager)
         {
             if (scriptFile != null)
                 LoadFile(scriptFile);
@@ -147,105 +143,43 @@ namespace WebExecutor
                 ((executor != null && executor.IsRunning) ? " - Running" : string.Empty);
         }
 
-        public void RunScript()
+        public async Task RunScript()
         {
             if (executor != null && executor.IsRunning)
                 return;
 
-            executor = new ScriptExecutor(
-                this, new InteractiveConsoleWriter(textBoxDebug));
-
-            textBoxDebug.Clear();
-
-            executor.Completed += executor_Completed;
-            executor.Run(textEditor.Document.TextContent);
-
-            UpdateWindowTitle();
-        }
-
-        private void executor_Completed(object sender, CompletedEventArgs e)
-        {
-            this.Invoke(new Action(() =>
+            cancelSource = new CancellationTokenSource();
+            using (executor = new ScriptExecutor(
+                  TaskScheduler.FromCurrentSynchronizationContext(),
+                  downloadManager, new InteractiveConsoleWriter(textBoxDebug)))
+            {
+                textBoxDebug.Clear();
+                var task = executor.Run(textEditor.Document.TextContent, cancelSource.Token);
+                UpdateWindowTitle();
+                try
                 {
-                    UpdateWindowTitle();
-                }));
-
-            ((ScriptExecutor)sender).Completed -= executor_Completed;
-            if (e.Error != null)
-                MessageBox.Show(e.Error.ToString());
-
-            executor.Dispose();
+                    await task;
+                }
+                catch (Exception ex)
+                {
+                    if (ex is TaskCanceledException || ex is ThreadAbortException) { /* ignore */ }
+                    else { MessageBox.Show(ex.ToString()); }
+                }
+                UpdateWindowTitle();
+            }
         }
 
         public void StopScript()
         {
-            if (executor != null)
+            if (cancelSource != null && !cancelSource.IsCancellationRequested)
             {
-                executor.Stop();
+                cancelSource.Cancel();
             }
-        }
-
-        public void AddDownload(Uri resource, string fileName)
-        {
-            DownloadItem download = new DownloadItem(resource, fileName);
-            var addDownload = new Action<DownloadItem>((item) =>
-                {
-                    downloads.Add(item);
-                    flowLayoutPanelFiles.Controls.Add(item);
-                    flowLayoutPanelFiles.SetFlowBreak(item, true);
-                    flowLayoutPanelFiles.ScrollControlIntoView(item);
-                    
-                    item.Start();
-                });
-
-            if (flowLayoutPanelFiles.InvokeRequired)
-            {
-                flowLayoutPanelFiles.Invoke(addDownload, download);
-            }
-            else
-            {
-                addDownload(download);
-            }
-        }
-
-        public void ClearDownloads()
-        {
-            downloads = downloads.Where(d =>
-                d.DownloadState != DownloadState.Cancelled &&
-                d.DownloadState != DownloadState.Completed &&
-                d.DownloadState != DownloadState.Error).ToList();
-        }
-
-        private bool TryCancelDownloads()
-        {
-            int activeDownloads = downloads.Count(
-                d => d.DownloadState == DownloadState.Downloading);
-
-            if (activeDownloads > 0)
-            {
-                var result = MessageBox.Show(
-                   string.Format("There are {0} active downloads. Cancel them?", activeDownloads),
-                   this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-
-                if (result == DialogResult.Yes)
-                {
-                    foreach (IDownload item in downloads)
-                    {
-                        item.Cancel();
-                    }
-                }
-                else if (result == DialogResult.No)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         private void ExecuterForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            bool exit = TrySaveChanges() && TryCancelDownloads();
+            bool exit = TrySaveChanges();
 
             if (exit)
             {
@@ -253,6 +187,16 @@ namespace WebExecutor
             }
 
             e.Cancel = !exit;
+        }
+
+        public void UndoInTextEditor()
+        {
+            textEditor.Undo();
+        }
+
+        public void RedoInTextEditor()
+        {
+            textEditor.Redo();
         }
     }
 }
