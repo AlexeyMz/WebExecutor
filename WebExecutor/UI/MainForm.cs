@@ -13,6 +13,7 @@ namespace WebExecutor
     public partial class MainForm : Form
     {
         DownloadListPanel downloadListPanel;
+        ConsolePanel consolePanel;
 
         public OpenFileDialog OpenDialog
         {
@@ -34,18 +35,24 @@ namespace WebExecutor
             InitializeComponent();
 
             downloadListPanel = new DownloadListPanel();
-            downloadListPanel.VisibleChanged += (s, args) => { downloadsToolStripMenuItem.Checked = downloadListPanel.Visible; };
-            downloadsToolStripMenuItem.Click += (s, args) => { ToggleDocked(downloadListPanel); };
+            downloadListPanel.VisibleChanged += (s, e) => { downloadsVisibleMenuItem.Checked = downloadListPanel.Visible; };
+            downloadsVisibleMenuItem.Click += (s, e) => { ToggleDocked(downloadListPanel); };
+
+            consolePanel = new ConsolePanel();
+            consolePanel.VisibleChanged += (s, e) => { consoleVisibleMenuItem.Checked = consolePanel.Visible; };
+            consoleVisibleMenuItem.Click += (s, e) => { ToggleDocked(consolePanel); };
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             ShowDocked(downloadListPanel);
+            ShowDocked(consolePanel);
         }
 
         private void ShowDocked(DockContent dockContent)
         {
             DockState location = DockState.DockRight;
+            if (dockContent is ConsolePanel) { location = DockState.DockBottomAutoHide; }
             dockContent.Show(dockPanel, location);
         }
 
@@ -143,7 +150,7 @@ namespace WebExecutor
 
         private void toolBarVisible_Click(object sender, EventArgs e)
         {
-            toolStrip.Visible = toolBarToolStripMenuItem.Checked;
+            toolStrip.Visible = toolBarVisibleMenuItem.Checked;
         }
 
         private void closeAll_Click(object sender, EventArgs e)

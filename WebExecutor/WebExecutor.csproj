@@ -78,6 +78,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\ConsolePanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ConsolePanel.Designer.cs">
+      <DependentUpon>ConsolePanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\DownloadItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -99,9 +105,16 @@
     </Compile>
     <Compile Include="Core\IDownload.cs" />
     <Compile Include="Core\IDownloadManager.cs" />
+    <Compile Include="UI\InteractiveConsole.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\InteractiveConsole.Designer.cs">
+      <DependentUpon>InteractiveConsole.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\InteractiveConsoleWriter.cs" />
     <Compile Include="UI\LuaSyntaxModeProvider .cs" />
     <Compile Include="Core\ScriptExecutor.cs" />
+    <Compile Include="UI\MessageType.cs" />
     <Compile Include="Utils\LuaExtensions.cs" />
     <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
@@ -111,6 +124,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UI\ConsolePanel.resx">
+      <DependentUpon>ConsolePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\DownloadItem.resx">
       <DependentUpon>DownloadItem.cs</DependentUpon>
     </EmbeddedResource>
@@ -119,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ExecuterForm.resx">
       <DependentUpon>ExecuterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\InteractiveConsole.resx">
+      <DependentUpon>InteractiveConsole.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

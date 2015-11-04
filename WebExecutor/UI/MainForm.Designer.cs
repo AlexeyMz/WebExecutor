@@ -70,8 +70,9 @@
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.downloadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBarVisibleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.downloadsVisibleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.consoleVisibleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -313,30 +314,40 @@
             // viewMenu
             // 
             this.viewMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolBarToolStripMenuItem,
-            this.downloadsToolStripMenuItem});
+            this.toolBarVisibleMenuItem,
+            this.downloadsVisibleMenuItem,
+            this.consoleVisibleMenuItem});
             this.viewMenu.Name = "viewMenu";
             this.viewMenu.Size = new System.Drawing.Size(44, 20);
             this.viewMenu.Text = "&View";
             // 
-            // toolBarToolStripMenuItem
+            // toolBarVisibleMenuItem
             // 
-            this.toolBarToolStripMenuItem.Checked = true;
-            this.toolBarToolStripMenuItem.CheckOnClick = true;
-            this.toolBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.toolBarToolStripMenuItem.Name = "toolBarToolStripMenuItem";
-            this.toolBarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
-            this.toolBarToolStripMenuItem.Text = "&Toolbar";
-            this.toolBarToolStripMenuItem.Click += new System.EventHandler(this.toolBarVisible_Click);
+            this.toolBarVisibleMenuItem.Checked = true;
+            this.toolBarVisibleMenuItem.CheckOnClick = true;
+            this.toolBarVisibleMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.toolBarVisibleMenuItem.Name = "toolBarVisibleMenuItem";
+            this.toolBarVisibleMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.toolBarVisibleMenuItem.Text = "&Toolbar";
+            this.toolBarVisibleMenuItem.Click += new System.EventHandler(this.toolBarVisible_Click);
             // 
-            // downloadsToolStripMenuItem
+            // downloadsVisibleMenuItem
             // 
-            this.downloadsToolStripMenuItem.Checked = true;
-            this.downloadsToolStripMenuItem.CheckOnClick = true;
-            this.downloadsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.downloadsToolStripMenuItem.Name = "downloadsToolStripMenuItem";
-            this.downloadsToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
-            this.downloadsToolStripMenuItem.Text = "Downloads";
+            this.downloadsVisibleMenuItem.Checked = true;
+            this.downloadsVisibleMenuItem.CheckOnClick = true;
+            this.downloadsVisibleMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.downloadsVisibleMenuItem.Name = "downloadsVisibleMenuItem";
+            this.downloadsVisibleMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.downloadsVisibleMenuItem.Text = "Downloads";
+            // 
+            // consoleVisibleMenuItem
+            // 
+            this.consoleVisibleMenuItem.Checked = true;
+            this.consoleVisibleMenuItem.CheckOnClick = true;
+            this.consoleVisibleMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.consoleVisibleMenuItem.Name = "consoleVisibleMenuItem";
+            this.consoleVisibleMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.consoleVisibleMenuItem.Text = "Console";
             // 
             // toolsMenu
             // 
@@ -472,7 +483,7 @@
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.Location = new System.Drawing.Point(0, 49);
             this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(897, 470);
+            this.dockPanel.Size = new System.Drawing.Size(897, 576);
             dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
             dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
@@ -525,7 +536,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(897, 519);
+            this.ClientSize = new System.Drawing.Size(897, 625);
             this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
@@ -563,7 +574,7 @@
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewMenu;
-        private System.Windows.Forms.ToolStripMenuItem toolBarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolBarVisibleMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsMenu;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowsMenu;
@@ -582,7 +593,8 @@
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton clearDownloadsButton;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
-        private System.Windows.Forms.ToolStripMenuItem downloadsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem downloadsVisibleMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem consoleVisibleMenuItem;
     }
 }
 
