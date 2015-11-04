@@ -47,29 +47,45 @@ namespace WebExecutor
             InitializeInterpreter();
         }
 
-        [LuaFunction]
-        public void Write(string text)
+        private static Task RunUsingScheduler(TaskScheduler taskScheduler, Action action)
         {
-            if (disposed)
-                return;
+            return Task.Factory.StartNew(
+                state => action(), null, CancellationToken.None,
+                TaskCreationOptions.None, taskScheduler);
+        }
 
-            debugWriter.Write(text);
+        private static Task<T> RunUsingScheduler<T>(TaskScheduler taskScheduler, Func<T> func)
+        {
+            return Task.Factory.StartNew(
+                state => func(), null, CancellationToken.None,
+                TaskCreationOptions.None, taskScheduler);
         }
 
         [LuaFunction]
-        public void WriteLine(string text)
+        public void Write(string text, params object[] args)
         {
-            if (disposed)
-                return;
+            if (disposed) { return; }
+            debugWriter.Write(text, args);
+        }
 
-            debugWriter.WriteLine(text);
+        [LuaFunction]
+        public void WriteLine(string text, params object[] args)
+        {
+            if (disposed) { return; }
+            debugWriter.WriteLine(text, args);
+        }
+
+        [LuaFunction("print")]
+        public void Print(params object[] parts)
+        {
+            if (disposed) { return; }
+            debugWriter.WriteLine(string.Concat(parts));
         }
 
         [LuaFunction]
         public Regex Regex(string regex, bool ignoreCase)
         {
-            return new Regex(
-                regex, ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
+            return new Regex(regex, ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
         }
 
         [LuaFunction]
@@ -105,8 +121,7 @@ namespace WebExecutor
         [LuaFunction]
         public HtmlDocument LoadDocument(string url)
         {
-            if (disposed)
-                return null;
+            if (disposed) { return null; }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.UserAgent = webSettings.UserAgent;
@@ -135,16 +150,14 @@ namespace WebExecutor
                 throw;
             }
 
-            Task.Factory.StartNew(state => downloadManager.AddDownload(resource, fileName),
-                null, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
+            RunUsingScheduler(uiScheduler, () => downloadManager.AddDownload(resource, fileName));
         }
 
         [LuaFunction]
         public int ActiveDownloadsCount()
         {
-            var downloadsCount = Task.Factory.StartNew(state => downloadManager.Downloads.Count(
-                    d => d.DownloadState == DownloadState.Downloading),
-                null, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
+            var downloadsCount = RunUsingScheduler(uiScheduler, () => downloadManager.Downloads.Count(
+                d => d.DownloadState == DownloadState.Downloading));
             return downloadsCount.Result;
         }
 
