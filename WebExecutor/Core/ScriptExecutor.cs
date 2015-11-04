@@ -23,7 +23,7 @@ namespace WebExecutor
 
         TaskScheduler uiScheduler;
         IDownloadManager downloadManager;
-        TextWriter debugWriter;
+        IDebugConsole debugConsole;
 
         Lua lua;
         TaskCompletionSource<bool> completitionSource;
@@ -37,11 +37,11 @@ namespace WebExecutor
             get { return completitionSource != null && !completitionSource.Task.IsCompleted; }
         }
 
-        public ScriptExecutor(TaskScheduler uiScheduler, IDownloadManager downloadManager, TextWriter debugWriter)
+        public ScriptExecutor(TaskScheduler uiScheduler, IDownloadManager downloadManager, IDebugConsole debugConsole)
         {
             this.uiScheduler = uiScheduler;
             this.downloadManager = downloadManager;
-            this.debugWriter = debugWriter;
+            this.debugConsole = debugConsole;
             
             lua = new Lua();
             InitializeInterpreter();
@@ -51,7 +51,7 @@ namespace WebExecutor
         {
             return Task.Factory.StartNew(
                 state => action(), null, CancellationToken.None,
-                TaskCreationOptions.None, taskScheduler);
+                TaskCreationOptions.DenyChildAttach, taskScheduler);
         }
 
         private static Task<T> RunUsingScheduler<T>(TaskScheduler taskScheduler, Func<T> func)
@@ -62,29 +62,27 @@ namespace WebExecutor
         }
 
         [LuaFunction]
-        public void Write(string text, params object[] args)
-        {
-            if (disposed) { return; }
-            debugWriter.Write(text, args);
-        }
-
-        [LuaFunction]
         public void WriteLine(string text, params object[] args)
         {
+            if (text == null) { throw new ArgumentNullException(nameof(text)); }
             if (disposed) { return; }
-            debugWriter.WriteLine(text, args);
+            RunUsingScheduler(uiScheduler, () =>
+                debugConsole.AppendMessage(MessageKind.Debug, string.Format(text, args))).Wait();
         }
 
         [LuaFunction("print")]
         public void Print(params object[] parts)
         {
+            if (parts == null) { throw new ArgumentNullException(nameof(parts)); }
             if (disposed) { return; }
-            debugWriter.WriteLine(string.Concat(parts));
+            RunUsingScheduler(uiScheduler, () =>
+                debugConsole.AppendMessage(MessageKind.Debug, string.Concat(parts))).Wait();
         }
 
         [LuaFunction]
         public Regex Regex(string regex, bool ignoreCase)
         {
+            if (regex == null) { throw new ArgumentNullException(nameof(regex)); }
             return new Regex(regex, ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
         }
 
@@ -121,6 +119,7 @@ namespace WebExecutor
         [LuaFunction]
         public HtmlDocument LoadDocument(string url)
         {
+            if (url == null) { throw new ArgumentNullException(nameof(url)); }
             if (disposed) { return null; }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -140,17 +139,10 @@ namespace WebExecutor
         [LuaFunction]
         public void DownloadFile(string url, string fileName)
         {
-            Uri resource = null;
-            try
-            {
-                resource = new Uri(url, UriKind.Absolute);
-            }
-            catch (UriFormatException)
-            {
-                throw;
-            }
-
-            RunUsingScheduler(uiScheduler, () => downloadManager.AddDownload(resource, fileName));
+            if (url == null) { throw new ArgumentNullException(nameof(url)); }
+            if (fileName == null) { throw new ArgumentNullException(nameof(fileName)); }
+            Uri resource = new Uri(url, UriKind.Absolute);
+            RunUsingScheduler(uiScheduler, () => downloadManager.AddDownload(resource, fileName)).Wait();
         }
 
         [LuaFunction]

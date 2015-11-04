@@ -13,7 +13,7 @@ using NLua;
 
 namespace WebExecutor
 {
-    public partial class InteractiveConsole : UserControl
+    public partial class InteractiveConsole : UserControl, IDebugConsole
     {
         const string MessageDivider = "---\n";
 
@@ -88,6 +88,13 @@ namespace WebExecutor
             logEditor.ActiveTextAreaControl.ScrollToCaret();
 
             previousMessageKind = null;
+        }
+
+        public void Clear()
+        {
+            logEditor.Document.TextContent = "";
+            logEditor.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
+            logEditor.Document.CommitUpdate();
         }
     }
 }

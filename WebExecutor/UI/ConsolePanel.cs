@@ -13,6 +13,8 @@ namespace WebExecutor
 {
     public partial class ConsolePanel : DockContent
     {
+        public IDebugConsole Console => interactiveConsole;
+
         public ConsolePanel()
         {
             InitializeComponent();

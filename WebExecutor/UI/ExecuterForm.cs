@@ -5,6 +5,7 @@ using System.IO;
 using WeifenLuo.WinFormsUI.Docking;
 using System.Threading.Tasks;
 using System.Threading;
+using NLua.Exceptions;
 
 namespace WebExecutor
 {
@@ -15,6 +16,8 @@ namespace WebExecutor
         string fileName;
 
         IDownloadManager downloadManager;
+        IDebugConsole debugConsole;
+
         ScriptExecutor executor;
         CancellationTokenSource cancelSource;
 
@@ -23,17 +26,18 @@ namespace WebExecutor
             get { return textEditor.ActiveTextAreaControl.TextArea.ClipboardHandler; }
         }
 
-        public ExecuterForm(IDownloadManager downloadManager)
+        public ExecuterForm(IDownloadManager downloadManager, IDebugConsole debugConsole)
         {
             this.downloadManager = downloadManager;
+            this.debugConsole = debugConsole;
             InitializeComponent();
             
             textEditor.SetHighlighting("SharpLua");
             textEditor.Document.DocumentChanged += Document_TextContentChanged;
         }
 
-        public ExecuterForm(IDownloadManager downloadManager, string scriptFile)
-            : this(downloadManager)
+        public ExecuterForm(IDownloadManager downloadManager, IDebugConsole debugConsole, string scriptFile)
+            : this(downloadManager, debugConsole)
         {
             if (scriptFile != null)
                 LoadFile(scriptFile);
@@ -151,9 +155,9 @@ namespace WebExecutor
             cancelSource = new CancellationTokenSource();
             using (executor = new ScriptExecutor(
                   TaskScheduler.FromCurrentSynchronizationContext(),
-                  downloadManager, new InteractiveConsoleWriter(textBoxDebug)))
+                  downloadManager, debugConsole))
             {
-                textBoxDebug.Clear();
+                debugConsole.Clear();
                 var task = executor.Run(textEditor.Document.TextContent, cancelSource.Token);
                 UpdateWindowTitle();
                 try
@@ -163,10 +167,28 @@ namespace WebExecutor
                 catch (Exception ex)
                 {
                     if (ex is TaskCanceledException || ex is ThreadAbortException) { /* ignore */ }
-                    else { MessageBox.Show(ex.ToString()); }
+                    else { PrintException(ex); }
                 }
                 UpdateWindowTitle();
             }
+        }
+
+        private void PrintException(Exception ex)
+        {
+            string message;
+            if (ex is LuaException || ex is LuaScriptException)
+            {
+                var scriptException = ex as LuaScriptException;
+                message = string.Format("{0}: {2}{1}", ex.GetType(), ex.Message,
+                    scriptException == null ? "" : scriptException.Source + " --> ");
+                if (ex.InnerException != null)
+                    message += Environment.NewLine + ex.InnerException.ToString();
+            }
+            else
+            {
+                message = ex.ToString();
+            }
+            debugConsole.AppendMessage(MessageKind.Error, message);
         }
 
         public void StopScript()

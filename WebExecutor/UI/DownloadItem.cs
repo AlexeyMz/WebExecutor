@@ -53,38 +53,12 @@ namespace WebExecutor
             }
         }
 
-        private bool TryInitializeDownload(out string errorMessage)
+        private void InitializeDownload()
         {
-            errorMessage = null;
-
-            try
-            {
-                httpClient = new HttpClient();
-                response = httpClient.GetAsync(resource);
-            }
-            catch (WebException ex)
-            {
-                errorMessage = ex.Message;
-                return false;
-            }
-
-            bool ioError = true;
-            try
-            {
-                fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-                ioError = false;
-            }
-            catch (IOException ex)
-            {
-                errorMessage = ex.Message;
-            }
-
-            if (ioError)
-            {
-                httpClient.Dispose();
-            }
-
-            return !ioError;
+            httpClient = new HttpClient();
+            response = httpClient.GetAsync(resource);
+            
+            fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
         }
 
         public void Start()
@@ -92,11 +66,15 @@ namespace WebExecutor
             if (DownloadState == DownloadState.Downloading)
                 return;
 
-            string errorMessage = null;
-            if (!TryInitializeDownload(out errorMessage))
+            try
             {
+                InitializeDownload();
+            }
+            catch (Exception ex)
+            {
+                DisposeResources();
                 DownloadState = DownloadState.Error;
-                textBoxStatus.Text = "Error: " + errorMessage;
+                textBoxStatus.Text = "Error: " + ex.Message;
                 buttonRetry.Enabled = true;
 
                 OnStateChanged();
@@ -178,8 +156,7 @@ namespace WebExecutor
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            httpClient.Dispose();
-            fileStream.Close();
+            DisposeResources();
 
             progressBar.Style = ProgressBarStyle.Continuous;
 
@@ -205,6 +182,12 @@ namespace WebExecutor
             
             buttonCancel.Enabled = false;
             OnStateChanged();
+        }
+
+        private void DisposeResources()
+        {
+            httpClient?.Dispose();
+            fileStream?.Close();
         }
     }
 }

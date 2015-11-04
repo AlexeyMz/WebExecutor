@@ -43,7 +43,7 @@
             this.tableLayoutPanel.Name = "tableLayoutPanel";
             this.tableLayoutPanel.RowCount = 1;
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 310F));
             this.tableLayoutPanel.Size = new System.Drawing.Size(358, 310);
             this.tableLayoutPanel.TabIndex = 0;
             // 
@@ -56,6 +56,8 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.HideOnClose = true;
             this.Name = "DownloadListPanel";
+            this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.DockRight;
+            this.ShowIcon = false;
             this.Text = "Downloads";
             this.ResumeLayout(false);
 

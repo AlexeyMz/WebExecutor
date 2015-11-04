@@ -51,9 +51,7 @@ namespace WebExecutor
 
         private void ShowDocked(DockContent dockContent)
         {
-            DockState location = DockState.DockRight;
-            if (dockContent is ConsolePanel) { location = DockState.DockBottomAutoHide; }
-            dockContent.Show(dockPanel, location);
+            dockContent.Show(dockPanel);
         }
 
         private void ToggleDocked(DockContent dockContent)
@@ -66,7 +64,7 @@ namespace WebExecutor
 
         private void CreateWindow(string fileName)
         {
-            ExecuterForm executerForm = new ExecuterForm(downloadListPanel, fileName);
+            ExecuterForm executerForm = new ExecuterForm(downloadListPanel, consolePanel.Console, fileName);
             executerForm.Show(dockPanel, DockState.Document);
         }
 
@@ -105,7 +103,11 @@ namespace WebExecutor
 
         private async void run_Click(object sender, EventArgs e)
         {
-            await ActiveExecuterForm?.RunScript();
+            if (ActiveExecuterForm == null) { return; }
+            var runTask = ActiveExecuterForm.RunScript();
+            consolePanel.Pane.Activate();
+            consolePanel.Activate();
+            await runTask;
         }
 
         private void stop_Click(object sender, EventArgs e)

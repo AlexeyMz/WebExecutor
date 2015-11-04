@@ -105,16 +105,15 @@
     </Compile>
     <Compile Include="Core\IDownload.cs" />
     <Compile Include="Core\IDownloadManager.cs" />
+    <Compile Include="Core\IDebugConsole.cs" />
     <Compile Include="UI\InteractiveConsole.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\InteractiveConsole.Designer.cs">
       <DependentUpon>InteractiveConsole.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\InteractiveConsoleWriter.cs" />
     <Compile Include="UI\LuaSyntaxModeProvider .cs" />
     <Compile Include="Core\ScriptExecutor.cs" />
-    <Compile Include="UI\MessageType.cs" />
     <Compile Include="Utils\LuaExtensions.cs" />
     <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
