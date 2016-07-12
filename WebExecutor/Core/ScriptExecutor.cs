@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Net;
-using HtmlAgilityPack;
 using System.Text.RegularExpressions;
-using NLua;
-using System.Reflection;
 using System.Threading.Tasks;
+using System.Reflection;
+
+using HtmlAgilityPack;
+using NLua;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace WebExecutor
 {
@@ -130,7 +132,7 @@ namespace WebExecutor
             using (var response = (HttpWebResponse)request.GetResponse())
             using (var stream = response.GetResponseStream())
             {
-                document.Load(stream);
+                document.Load(stream, Encoding.UTF8);
             }
 
             return document;
@@ -163,6 +165,24 @@ namespace WebExecutor
         public LuaTable ToTable(System.Collections.IEnumerable collection)
         {
             return lua.CreateTable(collection);
+        }
+
+        [LuaFunction]
+        public void EnsureDirectoryExists(string directory)
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        [LuaFunction]
+        public void ZipDirectory(string directory, string archiveFileName, string fileFilter)
+        {
+            new FastZip().CreateZip(archiveFileName, directory, true, fileFilter);
+        }
+
+        [LuaFunction]
+        public string TrimString(string s)
+        {
+            return s.Trim();
         }
 
         private void InitializeInterpreter()
